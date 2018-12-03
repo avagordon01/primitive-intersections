@@ -1,6 +1,7 @@
 #include <Eigen/Dense>
 #include <variant>
-#include <cmath>
+
+namespace intersection {
 
 struct point {
     Eigen::Vector3f pos;
@@ -60,4 +61,6 @@ std::variant<std::monostate, point, circle> sphere_plane(sphere sphere, plane pl
         //TODO
     }
     return std::monostate();
+}
+
 }
