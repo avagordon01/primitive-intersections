@@ -33,7 +33,7 @@ namespace intersection {
 
     //distances between 1d and 0d things
     template <typename T>
-    static float squared_distance_impl(const point point, const T x) {
+    static float squared_distance(const point point, const T x) {
         float t = (point - x.pos).dot(x.dir) / x.dir.squaredNorm();
         if constexpr (std::is_same<T, ray>::value || std::is_same<T, segment>::value)
             t = std::max(t, 0.0f);
@@ -41,19 +41,10 @@ namespace intersection {
             t = std::min(t, 1.0f);
         return (x.pos + t * x.dir - point).squaredNorm();
     }
-    static float squared_distance(const point point, const line line) {
-        return squared_distance_impl(point, line);
-    }
-    static float squared_distance(const point point, const ray ray) {
-        return squared_distance_impl(point, ray);
-    }
-    static float squared_distance(const point point, const segment segment) {
-        return squared_distance_impl(point, segment);
-    }
 
     //distances between 1d things
     template <typename T0, typename T1>
-    static float squared_distance_impl(const T0 a, const T1 b) {
+    static float squared_distance(const T0 a, const T1 b) {
         Eigen::Vector3f n1 = a.dir.cross(b.dir.cross(a.dir));
         float t0 = (a.pos - b.pos).dot(n1) / b.dir.dot(n1);
         if constexpr (std::is_same<T0, ray>::value || std::is_same<T0, segment>::value)
@@ -69,24 +60,6 @@ namespace intersection {
             t1 = std::min(t1, 1.0f);
         Eigen::Vector3f p1 = b.pos + t1 * b.dir;
         return (p1 - p0).squaredNorm();
-    }
-    static float squared_distance(const line line0, const line line1) {
-        return squared_distance_impl(line0, line1);
-    }
-    static float squared_distance(const line line, const ray ray) {
-        return squared_distance_impl(line, ray);
-    }
-    static float squared_distance(const line line, const segment segment) {
-        return squared_distance_impl(line, segment);
-    }
-    static float squared_distance(const ray ray0, const ray ray1) {
-        return squared_distance_impl(ray0, ray1);
-    }
-    static float squared_distance(const ray ray, const segment segment) {
-        return squared_distance_impl(ray, segment);
-    }
-    static float squared_distance(const segment segment0, const segment segment1) {
-        return squared_distance_impl(segment0, segment1);
     }
 
     //distances between 3d and 0d things
