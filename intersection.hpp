@@ -6,7 +6,10 @@ namespace intersection {
 struct point {
     Eigen::Vector3f pos;
 };
-struct line {
+struct ray {
+    Eigen::Vector3f pos, dir;
+};
+struct segment {
     Eigen::Vector3f pos, dir;
 };
 struct plane {
