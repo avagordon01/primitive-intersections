@@ -127,4 +127,19 @@ namespace intersection {
     float distance(capsule capsule0, capsule capsule1) {
         return std::sqrt(squared_distance(capsule0.segment, capsule1.segment)) - capsule0.radius - capsule1.radius;
     }
+
+    //intersections
+    template <typename T0, typename T1>
+    bool intersects(T0 a, T1 b) {
+        constexpr bool sqrt_needed =
+            std::is_same<T0, sphere>::value ||
+            std::is_same<T0, capsule>::value ||
+            std::is_same<T1, sphere>::value ||
+            std::is_same<T1, capsule>::value;
+        if constexpr (sqrt_needed) {
+            return distance(a, b) < 0;
+        } else {
+            return squared_distance(a, b) < 0;
+        }
+    }
 }
