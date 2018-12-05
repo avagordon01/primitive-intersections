@@ -27,13 +27,13 @@ namespace intersection {
     };
 
     //distances between 0d things
-    float squared_distance(point point0, point point1) {
+    static float squared_distance(const point point0, const point point1) {
         return (point0 - point1).squaredNorm();
     }
 
     //distances between 1d and 0d things
     template <typename T>
-    float squared_distance_impl(point point, T x) {
+    static float squared_distance_impl(const point point, const T x) {
         float t = (point - x.pos).dot(x.dir) / x.dir.squaredNorm();
         if constexpr (std::is_same<T, ray>::value || std::is_same<T, segment>::value)
             t = std::max(t, 0.0f);
@@ -41,19 +41,19 @@ namespace intersection {
             t = std::min(t, 1.0f);
         return (x.pos + t * x.dir - point).squaredNorm();
     }
-    float squared_distance(point point, line line) {
+    static float squared_distance(const point point, const line line) {
         return squared_distance_impl(point, line);
     }
-    float squared_distance(point point, ray ray) {
+    static float squared_distance(const point point, const ray ray) {
         return squared_distance_impl(point, ray);
     }
-    float squared_distance(point point, segment segment) {
+    static float squared_distance(const point point, const segment segment) {
         return squared_distance_impl(point, segment);
     }
 
     //distances between 1d things
     template <typename T0, typename T1>
-    float squared_distance_impl(T0 a, T1 b) {
+    static float squared_distance_impl(const T0 a, const T1 b) {
         Eigen::Vector3f n1 = a.dir.cross(b.dir.cross(a.dir));
         float t0 = (a.pos - b.pos).dot(n1) / b.dir.dot(n1);
         if constexpr (std::is_same<T0, ray>::value || std::is_same<T0, segment>::value)
@@ -70,67 +70,67 @@ namespace intersection {
         Eigen::Vector3f p1 = b.pos + t1 * b.dir;
         return (p1 - p0).squaredNorm();
     }
-    float squared_distance(line line0, line line1) {
+    static float squared_distance(const line line0, const line line1) {
         return squared_distance_impl(line0, line1);
     }
-    float squared_distance(line line, ray ray) {
+    static float squared_distance(const line line, const ray ray) {
         return squared_distance_impl(line, ray);
     }
-    float squared_distance(line line, segment segment) {
+    static float squared_distance(const line line, const segment segment) {
         return squared_distance_impl(line, segment);
     }
-    float squared_distance(ray ray0, ray ray1) {
+    static float squared_distance(const ray ray0, const ray ray1) {
         return squared_distance_impl(ray0, ray1);
     }
-    float squared_distance(ray ray, segment segment) {
+    static float squared_distance(const ray ray, const segment segment) {
         return squared_distance_impl(ray, segment);
     }
-    float squared_distance(segment segment0, segment segment1) {
+    static float squared_distance(const segment segment0, const segment segment1) {
         return squared_distance_impl(segment0, segment1);
     }
 
     //distances between 3d and 0d things
-    float distance(point point, sphere sphere) {
+    static float distance(const point point, const sphere sphere) {
         return std::sqrt(squared_distance(point, sphere.pos)) - sphere.radius;
     }
-    float distance(point point, capsule capsule) {
+    static float distance(const point point, const capsule capsule) {
         return std::sqrt(squared_distance(point, capsule.segment)) - capsule.radius;
     }
 
     //distances between 3d and 1d things
-    float distance(sphere sphere, line line) {
+    static float distance(const sphere sphere, const line line) {
         return std::sqrt(squared_distance(sphere.pos, line)) - sphere.radius;
     }
-    float distance(sphere sphere, ray ray) {
+    static float distance(const sphere sphere, const ray ray) {
         return std::sqrt(squared_distance(sphere.pos, ray)) - sphere.radius;
     }
-    float distance(sphere sphere, segment segment) {
+    static float distance(const sphere sphere, const segment segment) {
         return std::sqrt(squared_distance(sphere.pos, segment)) - sphere.radius;
     }
-    float distance(capsule capsule, line line) {
+    static float distance(const capsule capsule, const line line) {
         return std::sqrt(squared_distance(line, capsule.segment)) - capsule.radius;
     }
-    float distance(capsule capsule, ray ray) {
+    static float distance(const capsule capsule, const ray ray) {
         return std::sqrt(squared_distance(ray, capsule.segment)) - capsule.radius;
     }
-    float distance(capsule capsule, segment segment) {
+    static float distance(const capsule capsule, const segment segment) {
         return std::sqrt(squared_distance(segment, capsule.segment)) - capsule.radius;
     }
 
     //distances between 3d and 3d things
-    float distance(sphere sphere0, sphere sphere1) {
+    static float distance(const sphere sphere0, const sphere sphere1) {
         return std::sqrt(squared_distance(sphere0.pos, sphere1.pos)) - sphere0.radius - sphere1.radius;
     }
-    float distance(sphere sphere, capsule capsule) {
+    static float distance(const sphere sphere, const capsule capsule) {
         return std::sqrt(squared_distance(sphere.pos, capsule.segment)) - sphere.radius - capsule.radius;
     }
-    float distance(capsule capsule0, capsule capsule1) {
+    static float distance(const capsule capsule0, const capsule capsule1) {
         return std::sqrt(squared_distance(capsule0.segment, capsule1.segment)) - capsule0.radius - capsule1.radius;
     }
 
     //intersections
     template <typename T0, typename T1>
-    bool intersects(T0 a, T1 b) {
+    static bool intersects(const T0 a, const T1 b) {
         constexpr bool sqrt_needed =
             std::is_same<T0, sphere>::value ||
             std::is_same<T0, capsule>::value ||
